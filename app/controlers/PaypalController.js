@@ -8,12 +8,11 @@ paypal.configure({
     'client_secret': process.env.PAYPAL_CLIENT_SECRET
   });
 
-exports.create_paypal_payment = function(req, res) {
+exports.create_paypal_payment = function(req, res, next) {
     let model = paymentModel.create_payment(req.body.intent, req.body.method, req.body.currency, req.body.description, req.body.total, req.body.items)
     paypal.payment.create(JSON.stringify(model), function (error, payment) {
         if (error) {
-            res.statusCode = error.httpStatusCode;
-            res.send(error);
+            next(error)
         } else {            
             payment.links.forEach(function(link){
                 if(link.rel === "approval_url")
@@ -23,14 +22,14 @@ exports.create_paypal_payment = function(req, res) {
     });
 };
 //paypal uses this endpoint
-exports.execute_paypal_payment = function(req, res){
+exports.execute_paypal_payment = function(req, res, next){
 
     var paymentId = req.query.paymentId;
     var payerId = { payer_id: req.query.PayerID };
     
     paypal.payment.execute(paymentId, payerId, function(error, payment){
         if (error) {
-            res.send(error);
+            next(error);
         } else {
             res.redirect('http://myfrontendapp.com/payment/success');
         }

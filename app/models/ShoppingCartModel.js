@@ -1,5 +1,5 @@
 'user strict';
-var sql = require('./db.js');
+var Connection = require('./db.js');
 
 //ShoppingCart object constructor
 var ShoppingCart = function(ShoppingCart){
@@ -14,47 +14,23 @@ ShoppingCart.addToCart = function addToCart(newShoppingCart, result) {
 
     let query = 'CALL shopping_cart_add_product(?, ?, ?)'
     
-    sql.query(query, [
+    new Connection().exec_query(query, [
         newShoppingCart.cart_id, 
         newShoppingCart.product_id, 
         newShoppingCart.attributes, 
-    ], 
-        function (err, res) {
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });           
+    ], result);           
 };
 ShoppingCart.getShoppingCartProducts = function getShoppingCartProducts(ShoppingCartId, result) {
 
     let query = 'CALL shopping_cart_get_products(?)';
 
-    sql.query(query, [ShoppingCartId], function (err, res) {             
-            if(err) {
-                console.log("error: ", err);
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [ShoppingCartId], result);   
 };
 ShoppingCart.remove = function(id, result){
 
     let query = 'CALL shopping_cart_remove_product(?)';
 
-     sql.query(query, [id], function (err, res) {
-
-                if(err) {
-                    result(err, null);
-                }
-                else{
-                    result(null, res);
-                }
-            }); 
+     new Connection().exec_query(query, [id], result); 
 };
 
 module.exports= ShoppingCart;

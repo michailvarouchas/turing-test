@@ -1,5 +1,5 @@
 'user strict';
-var sql = require('./db.js');
+var Connection = require('./db.js');
 
 //Product object constructor
 var Product = function(Product){
@@ -17,113 +17,42 @@ var Product = function(Product){
 Product.createProduct = function (newProduct, result) {   
     
     let query = "CALL catalog_add_product_to_category(?, ?, ?, ?)"
-    
-    sql.query(query, [newProduct.categoryId, newProduct.name, newProduct.description, newProduct.price], function (err, res) {
-            
-        if(err) {
-            result(err, null);
-        }
-        else{
-            result(null, res);
-        }
-    });           
+    new Connection().exec_query(query, [newProduct.categoryId, newProduct.name, newProduct.description, newProduct.price], result);         
 };
 Product.getProductInfo = function (ProductId, result) {
 
     let query = 'CALL catalog_get_product_details(?)';
-
-    sql.query(query, [ProductId], function (err, res) {             
-            if(err) {
-                console.log("error: ", err);
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [ProductId], result); 
 };
 Product.getCategoryProducts = function (categoryId, offset = 0, fetch = 30, descriptionLength = 1000, result) {        
 
     let query = 'CALL catalog_get_products_in_category(?, ?, ?, ?)';
-
-    sql.query(query, [categoryId, descriptionLength, fetch, offset], function (err, res) {
-
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [categoryId, descriptionLength, fetch, offset], result);
 };
 Product.getDepartmentProducts = function (departmentId, offset = 0, fetch = 30, descriptionLength = 1000, result) {        
 
     let query = 'CALL catalog_get_products_on_department(?, ?, ?, ?)';
-
-    sql.query(query, [departmentId, descriptionLength, fetch, offset], function (err, res) {
-
-            if(err) {
-                console.log("error: ", err);
-                result(err, null);
-            }
-            else{
-              console.log('Products : ', res);  
-
-             result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [departmentId, descriptionLength, fetch, offset], result);
 };
 Product.getAllProduct = function (offset = 0, fetch = 30, descriptionLength = 1000, result) {        
 
         let query = 'CALL catalog_get_products_on_catalog(?, ?, ?)';
-        sql.query(query, [descriptionLength, fetch, offset], function (err, res) {
-
-                if(err) {
-                    result(err, null);
-                }
-                else{
-                    result(null, res);
-                }
-            });   
+        new Connection().exec_query(query, [descriptionLength, fetch, offset], result);
 };
 Product.searchProducts = function (search, offset = 0, fetch = 30, descriptionLength = 1000, on = 'on', result) {        
     
     let query = 'CALL catalog_search(?, ?, ?, ?, ?)';
-    sql.query(query, [search, on, descriptionLength, fetch, offset], function (err, res) {
-
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [search, on, descriptionLength, fetch, offset], result);  
 };
 Product.updateById = function(id, product, result){
 
     let query = 'CALL catalog_update_product(?, ?, ?, ?, ?)';
-
-    sql.query(query, [id, product.name, product.description, product.price, product.discounted_price], function (err, res) {
-            if(err) {
-                result(err, null);
-            }
-            else{   
-                result(null, res);
-            }
-        }); 
+    new Connection().exec_query(query, [id, product.name, product.description, product.price, product.discounted_price], result);
 };
 Product.remove = function(id, result){
 
     let query = 'CALL catalog_delete_product(?)';
-
-     sql.query(query, [id], function (err, res) {
-        if(err) {
-            result(err, null);
-        }
-        else{
-            result(null, res);
-        }
-    }); 
+    new Connection().exec_query(query, [id], result);
 };
 
 module.exports= Product;

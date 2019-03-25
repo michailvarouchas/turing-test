@@ -1,5 +1,5 @@
 'user strict';
-var sql = require('./db.js');
+var Connection = require('./db.js');
 
 //Attribute object constructor
 var Attribute = function(Attribute){
@@ -10,83 +10,39 @@ Attribute.add = function add(newAttribute, result) {
 
     let query = 'CALL catalog_add_attribute(?)'
     
-    sql.query(query, [
+    new Connection().exec_query(query, [
         newAttribute.name, 
-    ], 
-        function (err, res) {
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });           
+    ], result);           
 };
 Attribute.getAttributeDetails = function getAttributeDetails(AttributeId, result) {
 
     let query = 'CALL catalog_get_attribute_details(?)';
 
-    sql.query(query, [AttributeId], function (err, res) {             
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [AttributeId], result);   
 };
 Attribute.getAttributes = function getAttributes(result) {
 
     let query = 'CALL catalog_get_attributes()';
 
-    sql.query(query, function (err, res) {             
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, null, result);   
 };
 Attribute.getAttributesNotAssignedToProduct = function getAttributesNotAssignedToProduct(productId, result) {
 
     let query = 'CALL catalog_get_attributes_not_assigned_to_product(?)';
 
-    sql.query(query, [productId], function (err, res) {             
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [productId], result);   
 };
 Attribute.update = function update(attributeId, attribute, result) {
 
     let query = 'CALL catalog_update_attribute(?, ?)';
 
-    sql.query(query, [attributeId, attribute.name], function (err, res) {             
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [attributeId, attribute.name], result);   
 };
 Attribute.remove = function(id, result){
 
     let query = 'CALL catalog_delete_attribute(?)';
 
-     sql.query(query, [id], function (err, res) {
-
-                if(err) {
-                    result(err, null);
-                }
-                else{
-                    result(null, res);
-                }
-            }); 
+    new Connection().exec_query(query, [id], result); 
 };
 
 module.exports= Attribute;

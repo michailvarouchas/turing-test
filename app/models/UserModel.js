@@ -1,5 +1,5 @@
 'user strict';
-var sql = require('./db.js');
+var Connection = require('./db.js');
 
 //Customer object constructor
 var Customer = function(Customer){
@@ -22,36 +22,19 @@ Customer.create = function(newCustomer, result){
 
     let query = 'CALL customer_add(?, ?, ?)';
 
-    sql.query(query, [newCustomer.name, newCustomer.email, newCustomer.password], function (err, res) {
-            
-        if(err) {
-            result(err, null);
-        }
-        else{
-            result(null, res);
-        }
-    }); 
+    new Connection().exec_query(query, [newCustomer.name, newCustomer.email, newCustomer.password], result); 
 }
 Customer.findOne = function(body, result){
 
     let query = "CALL customer_get_login_info(?)";
 
-    sql.query(query, body.email, function (err, res) {
-            
-        if(err) {
-            result(err, null);
-        }
-        else{
-            console.log(res);
-            result(null, res);
-        }
-    }); 
+    new Connection().exec_query(query, body.email, result); 
 }
 Customer.updateAccount = function(body, result){
     
     let query = "CALL customer_update_account(?, ?, ?, ?, ?, ?, ?)";
 
-    sql.query(query, [
+    new Connection().exec_query(query, [
         body.customer_id, 
         body.name, 
         body.email, 
@@ -59,21 +42,13 @@ Customer.updateAccount = function(body, result){
         body.day_phone, 
         body.eve_phone, 
         body.mob_phone
-    ], function (err, res) {
-            
-        if(err) {
-            result(err, null);
-        }
-        else{
-            result(null, res);
-        }
-    }); 
+    ], result); 
 }
 Customer.updateAddress = function(body, result){
     
     let query = "CALL customer_update_address(?, ?, ?, ?, ?, ?, ?, ?)";
 
-    sql.query(query, [
+    new Connection().exec_query(query, [
         body.customer_id, 
         body.address_1, 
         body.address_2, 
@@ -82,31 +57,15 @@ Customer.updateAddress = function(body, result){
         body.postal_code, 
         body.country,
         body.shipping_region_id
-    ], function (err, res) {
-            
-        if(err) {
-            result(err, null);
-        }
-        else{
-            result(null, res);
-        }
-    }); 
+    ], result); 
 }
 Customer.updateCreditcard = function(body, result){
     
     let query = "CALL customer_update_credit_card(?, ?)";
 
-    sql.query(query, [
+    new Connection().exec_query(query, [
         body.customer_id, 
         body.credit_card 
-    ], function (err, res) {
-            
-        if(err) {
-            result(err, null);
-        }
-        else{
-            result(null, res);
-        }
-    }); 
+    ], result); 
 }
 module.exports= Customer;

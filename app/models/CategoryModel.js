@@ -1,5 +1,5 @@
 'user strict';
-var sql = require('./db.js');
+var Connection = require('./db.js');
 
 //Category object constructor
 var Category = function(Category){
@@ -12,85 +12,41 @@ Category.add = function add(newCategory, result) {
 
     let query = 'CALL catalog_add_category(?, ?, ?)'
     
-    sql.query(query, [
+    new Connection().exec_query(query, [
         newCategory.department_id, 
         newCategory.name, 
         newCategory.description, 
-    ], 
-        function (err, res) {
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });           
+    ], result);           
 };
 Category.getCategoryProducts = function getCategoryProducts(CategoryId, result) {
 
     let query = 'CALL catalog_get_category_products(?)';
 
-    sql.query(query, [CategoryId], function (err, res) {             
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [CategoryId], result);   
 };
 Category.getCategories = function getCategories(result) {
 
     let query = 'CALL catalog_get_categories()';
 
-    sql.query(query, function (err, res) {             
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, null, result);   
 };
 Category.getCategoryDetails = function getCategoryDetails(CategoryId, result) {
 
     let query = 'CALL catalog_get_category_details(?)';
 
-    sql.query(query, [CategoryId], function (err, res) {             
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [CategoryId], result);   
 };
 Category.update = function update(CategoryId, category, result) {
 
     let query = 'CALL catalog_update_category(?, ?, ?)';
 
-    sql.query(query, [CategoryId, category.name, category.description], function (err, res) {             
-            if(err) {
-                result(err, null);
-            }
-            else{
-                result(null, res);
-            }
-        });   
+    new Connection().exec_query(query, [CategoryId, category.name, category.description], result);   
 };
 Category.remove = function(id, result){
 
     let query = 'CALL catalog_delete_category(?)';
 
-     sql.query(query, [id], function (err, res) {
-
-                if(err) {
-                    result(err, null);
-                }
-                else{
-                    result(null, res);
-                }
-            }); 
+     new Connection().exec_query(query, [id], result); 
 };
 
 module.exports= Category;
